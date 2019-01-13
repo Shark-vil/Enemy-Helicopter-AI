@@ -1,0 +1,11 @@
+{ 
+"title"		:	"[FG][NPC] Black enemy helicopter (Support: ULX, Breach gamemode (ignore security fraction))", 
+"type"		:	"npc", 
+"tags"		:	[ "realism", "fun" ], 
+"ignore"	: 
+[ 
+"*.psd", 
+"*.vcproj", 
+"*.svn*" 
+] 
+} 

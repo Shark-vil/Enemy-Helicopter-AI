@@ -68,14 +68,17 @@ end
 function ENT:OnTakeDamage(dmg)
 	if self.dead then return end
 	if dmg:IsBulletDamage() then 
-		local class = dmg:GetAttacker():GetClass()
-		if (class != "npc_apache_scp_sb" && class != "npc_apache_scp_sb_friend" && class != "npc_combinegunship" && class != "npc_helicopter" && class != "npc_strider") then
-			return
-		else
-			self:SetHealth(self:Health() - dmg:GetDamage()/4)
-		end
-	else
-		self:SetHealth(self:Health() - dmg:GetDamage())
+		self:SetHealth( self:Health() - dmg:GetDamage() / math.random( 3, 6 ) );
+	-- 	local class = dmg:GetAttacker():GetClass()
+	-- 	if (class != "npc_apache_scp_sb" && class != "npc_apache_scp_sb_new_enemy" && class != "npc_apache_scp_sb_friend" && class != "npc_combinegunship" && class != "npc_helicopter" && class != "npc_strider") then
+	-- 		return
+	-- 	else
+	-- 		self:SetHealth(self:Health() - dmg:GetDamage()/4)
+	-- 	end
+
+	-- 	self:SetHealth( self:Health() - dmg:GetDamage() / math.random( 3, 6 ) );
+	-- else
+	-- 	self:SetHealth(self:Health() - dmg:GetDamage())
 	end
 
 	if (self.PequodDown) then
@@ -130,7 +133,7 @@ function ENT:FailMove()
 			start = startpos,
 			endpos = endpos,
 			filter = function( ent ) 
-				if ( ent:GetClass() != "npc_apache_scp_sb_friend" ) then 
+				if ( ent != self ) then 
 					return true
 				end 
 			end
@@ -140,7 +143,7 @@ function ENT:FailMove()
 			start = self.Entity:GetPos() + Vector(0, 0, 200),
 			endpos = self.Entity:GetPos() + Vector(0, 0, 500),
 			filter = function( ent ) 
-				if ( ent:GetClass() != "npc_apache_scp_sb_friend" ) then 
+				if ( ent != self ) then 
 					return true
 				end 
 			end
@@ -159,7 +162,7 @@ function ENT:FailMove()
 				start = self.Entity:GetPos() + right_right_1 - Vector(0, 0, 100),
 				endpos = self.Entity:GetPos() + right_right_2 - Vector(0, 0, 100),
 				filter = function( ent ) 
-					if ( ent:GetClass() != "npc_apache_scp_sb_friend" ) then 
+					if ( ent != self ) then 
 						return true
 					end 
 				end
@@ -171,7 +174,7 @@ function ENT:FailMove()
 				start = self.Entity:GetPos() + right_left_1 - Vector(0, 0, 100),
 				endpos = self.Entity:GetPos() + right_left_2 - Vector(0, 0, 100),
 				filter = function( ent ) 
-					if ( ent:GetClass() != "npc_apache_scp_sb_friend" ) then 
+					if ( ent != self ) then 
 						return true
 					end 
 				end
@@ -200,7 +203,7 @@ function ENT:FailMove()
 				start = self.Entity:GetPos() + right_right_1 - Vector(0, 0, 100),
 				endpos = self.Entity:GetPos() + right_right_2 - Vector(0, 0, 100),
 				filter = function( ent ) 
-					if ( ent:GetClass() != "npc_apache_scp_sb_friend" ) then 
+					if ( ent != self ) then 
 						return true
 					end 
 				end
@@ -212,7 +215,7 @@ function ENT:FailMove()
 				start = self.Entity:GetPos() + right_left_1 - Vector(0, 0, 100),
 				endpos = self.Entity:GetPos() + right_left_2 - Vector(0, 0, 100),
 				filter = function( ent ) 
-					if ( ent:GetClass() != "npc_apache_scp_sb_friend" ) then 
+					if ( ent != self ) then 
 						return true
 					end 
 				end
@@ -611,7 +614,7 @@ function ENT:FindEnemyDan()
 
 	for k, v in pairs(objects) do
 		if (v:GetClass() != self:GetClass()) && v != self then
-			if (IsValid(v) && v:GetClass() == "npc_apache_scp_sb") then
+			if (IsValid(v) && ( v:GetClass() == "npc_apache_scp_sb" || v:GetClass() == "npc_apache_scp_sb_new_enemy" )) then
 				self.Enemy = v
 				self.Alerted = true
 				return true

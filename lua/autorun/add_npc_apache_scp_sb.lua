@@ -1,9 +1,9 @@
 sound.Add( {
 	name = "apache_loop_rotor",
-	channel = CHAN_STATIC,
+	channel = CHAN_VOICE,
 	volume = 1.0,
 	level = 100,
-	pitch = 100,
+	pitch = { 80, 100 },
 	sound = "npc/attack_helicopter/aheli_rotor_loop1.wav"
 } )
 
@@ -88,15 +88,23 @@ sound.Add( {
 	sound = "apache/support_helicopter_requested.mp3"
 } )
 
-local Category = "SCP:CB"
+local Category = "Helicopter"
 local NPC = { 	
-	Name = "Black Helicopter", 
+	Name = "Black Helicopter (Enemy)", 
 	Class = "npc_apache_scp_sb",
 	Category = Category,
 }
 list.Set( "NPC", NPC.Class, NPC )
 
-local Category = "SCP:CB (Friend)"
+local Category = "Helicopter"
+local NPC = { 	
+	Name = "Black Helicopter (Enemy)", 
+	Class = "npc_apache_scp_sb_new_enemy",
+	Category = Category,
+}
+list.Set( "NPC", NPC.Class, NPC )
+
+local Category = "Helicopter"
 local NPC = { 	
 	Name = "Black Helicopter (Friend)", 
 	Class = "npc_apache_scp_sb_friend",
@@ -167,7 +175,6 @@ hook.Add( "PlayerSay", "HOOK.FG.Black.Helicopter.PequodFriendSupport", function(
 	}
 
 	local restext = text:lower()
-	print(restext)
 
 	if (table.HasValue(SimpleCommands, text:lower())) then
 		SupportAdd()
@@ -189,3 +196,19 @@ hook.Add( "PlayerSay", "HOOK.FG.Black.Helicopter.PequodFriendSupport", function(
 		end
 	end
 end )
+
+hook.Add("EntityTakeDamage", "npc_apache_scp_sb_EntityTakeDamage", function( ply, dmg )
+	local attacker = dmg:GetAttacker();
+	local class = attacker:GetClass();
+	if ( class == "npc_apache_scp_sb_new_enemy" or class == "proj_dan_heli_shot_scp_sb_fg" ) then
+		if ( class == "proj_dan_heli_shot_scp_sb_fg" ) then
+			attacker = attacker.Owner;
+		end;
+		if ( IsValid( attacker ) ) then
+			attacker.TurretNotHit = 0;
+			attacker.FailHit = 0;
+			attacker.LastDamageTimer = CurTime();
+			attacker.LastDamageTimerCheck = attacker.LastDamageTimerCheck + 1;
+		end;
+	end;
+end );

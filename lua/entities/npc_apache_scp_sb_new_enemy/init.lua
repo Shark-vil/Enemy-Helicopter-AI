@@ -641,8 +641,8 @@ end;
 	Player visibility check
 --]]
 function ENT:TargetIsVisible(target)
-	if ( IsValid(target) ) then
-		if ( self:VisibleVec( target:GetPos() ) or ( target:VisibleVec( self:GetPos() ) and math.random(-50, 50) == 0 ) ) then
+	if ( IsValid( target ) ) then
+		if ( self:VisibleVec( target:GetPos() ) or ( target:VisibleVec( self:GetPos() ) and math.random( -50, 50 ) == 0 ) ) then
 			return true;
 		else
 			return false;
@@ -693,7 +693,7 @@ end;
 	Types of Attack
 --]]
 function ENT:CopterFire(target)
-	if ( not self:TargetIsVisible(target) ) then 
+	if ( not self:TargetIsVisible( target ) ) then 
 		return; 
 	end;
 
@@ -817,7 +817,7 @@ function ENT:BreakableCopter()
 	ragdoll:SetSkin( self:GetSkin() );
 	ragdoll:SetColor( self:GetColor() );
 	ragdoll:SetMaterial( self:GetMaterial() );
-	if ( self.EnabledFire ) then 
+	if ( self.EnabledFire and math.random( 0, 1 ) == 1 ) then 
 		ragdoll:Ignite( math.Rand( 8, 10 ), 0 ) ;
 	end;
 	ragdoll:Spawn();
@@ -857,7 +857,7 @@ function ENT:BreakableCopter()
 	ragdoll:SetSkin( self:GetSkin() );
 	ragdoll:SetColor( self:GetColor() );
 	ragdoll:SetMaterial( self:GetMaterial() );
-	if ( self.EnabledFire ) then 
+	if ( self.EnabledFire and math.random( 0, 1 ) == 1 ) then 
 		ragdoll:Ignite( math.Rand( 8, 10 ), 0 ) ;
 	end;
 	timer.Simple( self.RemoveTimeProps, function()
@@ -882,7 +882,7 @@ function ENT:BreakableCopter()
 	ragdollPilot:SetCollisionGroup( COLLISION_GROUP_WORLD );
 	ragdollPilot:SetColor( Color( 150, 150, 150, 255 ) );
 	ragdollPilot:Spawn();
-	if ( self.EnabledFire ) then 
+	if ( self.EnabledFire and math.random( 0, 1 ) == 1 ) then 
 		ragdollPilot:Ignite( self.RemoveTimeProps, 0 );
 	end;
 	timer.Simple( self.RemoveTimeProps, function()
@@ -897,7 +897,7 @@ function ENT:BreakableCopter()
 	ragdollPilot:SetCollisionGroup( COLLISION_GROUP_WORLD );
 	ragdollPilot:SetColor( Color( 150, 150, 150, 255 ) );
 	ragdollPilot:Spawn();
-	if ( self.EnabledFire ) then 
+	if ( self.EnabledFire and math.random( 0, 1 ) == 1 ) then 
 		ragdollPilot:Ignite( self.RemoveTimeProps, 0 ) ;
 	end;
 	timer.Simple( self.RemoveTimeProps, function()
@@ -919,7 +919,7 @@ function ENT:BreakableCopter()
 			ragdoll:Remove();
 		end;
 	end );
-	if ( self.EnabledFire ) then 
+	if ( self.EnabledFire and math.random( 0, 1 ) == 1 ) then 
 		ragdoll:Ignite( math.Rand( 8, 10 ), 0 ) ;
 	end;
 	timer.Simple( 0.3, function()

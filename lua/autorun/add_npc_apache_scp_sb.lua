@@ -207,8 +207,17 @@ hook.Add("EntityTakeDamage", "npc_apache_scp_sb_EntityTakeDamage", function( ply
 		if ( IsValid( attacker ) ) then
 			attacker.TurretNotHit = 0;
 			attacker.FailHit = 0;
-			attacker.LastDamageTimer = CurTime();
+			attacker.LastDamageTimer = CurTime() + 10;
 			attacker.LastDamageTimerCheck = attacker.LastDamageTimerCheck + 1;
 		end;
 	end;
 end );
+
+
+-- concommand.Add("all_copter_dead", function()
+-- 	for k, v in ipairs( ents.GetAll() ) do
+-- 		if ( v:GetClass() == "npc_apache_scp_sb_new_enemy" ) then
+-- 			v:BreakableCopter();
+-- 		end;
+-- 	end;
+-- end);

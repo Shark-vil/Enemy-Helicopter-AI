@@ -26,7 +26,7 @@ function ENT:Initialize()
 end   
 
 function ENT:OnTakeDamage( dmginfo )
-	if !IsValid(self) || self.exploded then return end
+	if not IsValid(self) or self.exploded then return end
 
 	self.health = self.health - dmginfo:GetDamage()
 
@@ -36,12 +36,12 @@ function ENT:OnTakeDamage( dmginfo )
 end
 
 function ENT:PhysicsCollide()
-	if !IsValid(self) || self.exploded then return end
+	if not IsValid(self) or self.exploded then return end
 	self:StartExplosion()
 end
 
 function ENT:StartExplosion()
-	if !IsValid(self) || self.exploded then return end
+	if not IsValid(self) or self.exploded then return end
 	self.exploded = true
 
 	util.BlastDamage(self, self, self:GetPos(), 350, 250)
@@ -57,9 +57,9 @@ function ENT:StartExplosion()
 end
 
 function ENT:Think()
-	if !IsValid(self) then return end
+	if not IsValid(self) then return end
 
-	if ( !self.exploded ) then
+	if ( not self.exploded ) then
 		if ( self.dietime < CurTime() ) then
 			self:StartExplosion()
 		end

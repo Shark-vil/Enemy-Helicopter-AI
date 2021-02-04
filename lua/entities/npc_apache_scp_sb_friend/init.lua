@@ -70,7 +70,7 @@ function ENT:OnTakeDamage(dmg)
 	if dmg:IsBulletDamage() then 
 		self:SetHealth( self:Health() - dmg:GetDamage() / math.random( 3, 6 ) );
 	-- 	local class = dmg:GetAttacker():GetClass()
-	-- 	if (class != "npc_apache_scp_sb" && class != "npc_apache_scp_sb_new_enemy" && class != "npc_apache_scp_sb_friend" && class != "npc_combinegunship" && class != "npc_helicopter" && class != "npc_strider") then
+	-- 	if (class ~= "npc_apache_scp_sb" and class ~= "npc_apache_scp_sb_new_enemy" and class ~= "npc_apache_scp_sb_friend" and class ~= "npc_combinegunship" and class ~= "npc_helicopter" and class ~= "npc_strider") then
 	-- 		return
 	-- 	else
 	-- 		self:SetHealth(self:Health() - dmg:GetDamage()/4)
@@ -86,35 +86,35 @@ function ENT:OnTakeDamage(dmg)
 		return
 	end
 
-	if dmg:GetAttacker():GetClass() != self:GetClass() && math.random(0, 100) <= 90 && (dmg:IsExplosionDamage() || dmg:GetDamageType() == DMG_BURN) then
+	if dmg:GetAttacker():GetClass() ~= self:GetClass() and math.random(0, 100) <= 90 and (dmg:IsExplosionDamage() or dmg:GetDamageType() == DMG_BURN) then
 		self.Alerted = true
-		if (!dmg:GetAttacker():IsPlayer()) then
+		if (not dmg:GetAttacker():IsPlayer()) then
 			self.Enemy = dmg:GetAttacker()
 		end
 	end
 
 	if (self:Health() <= self.StartHealth/2) then
-		if !self.Smoke then
+		if not self.Smoke then
 			self.Smoke = self:CreateSmoke()
 		end
-		if !self.warningSound:IsPlaying() then
+		if not self.warningSound:IsPlaying() then
 			self.warningSound:PlayEx(1,100)
 		end
 	end
 	
-	if self:Health() <= 0 && !self.dead then 
+	if self:Health() <= 0 and not self.dead then 
 		self:KilledDan()
-	elseif (self:Health() <= 150 && !self.PequodBack && self.PlayerHelp) then
+	elseif (self:Health() <= 150 and not self.PequodBack and self.PlayerHelp) then
 		self.PlayerHelp = false
 		self.PlayerHelpID = NULL
 		self.Enemy = NULL
 		self.pequod_back:Play()
 		self.pequod_back:PlayEx(1, 100)
-		timer.Simple(5, function() if (!IsValid(self)) then return end self.pequod_back:Stop() end)
+		timer.Simple(5, function() if (not IsValid(self)) then return end self.pequod_back:Stop() end)
 		self.PequodBack = true
 		self.PatrolPoint = self.Entity:GetAngles():Forward() * -5000
 		timer.Simple(15, function()
-			if (!IsValid(self)) then return end 
+			if (not IsValid(self)) then return end 
 			self.PequodBack = true
 			self.PatrolPoint = nil
 		end)
@@ -133,7 +133,7 @@ function ENT:FailMove()
 			start = startpos,
 			endpos = endpos,
 			filter = function( ent ) 
-				if ( ent != self ) then 
+				if ( ent ~= self ) then 
 					return true
 				end 
 			end
@@ -143,17 +143,17 @@ function ENT:FailMove()
 			start = self.Entity:GetPos() + Vector(0, 0, 200),
 			endpos = self.Entity:GetPos() + Vector(0, 0, 500),
 			filter = function( ent ) 
-				if ( ent != self ) then 
+				if ( ent ~= self ) then 
 					return true
 				end 
 			end
 		} )
 
-		if (ceiling.Entity != NULL) then
+		if (ceiling.Entity ~= NULL) then
 			phy:AddVelocity(self.Entity:GetAngles():Up() * -40)
 		end
 
-		if (checkIsWorld.Entity != NULL && checkIsWorld.Entity:GetClass() == "worldspawn") then
+		if (checkIsWorld.Entity ~= NULL and checkIsWorld.Entity:GetClass() == "worldspawn") then
 			-- phy:AddVelocity(self.Entity:GetAngles():Forward() * -math.abs( (phy:GetVelocity().x)*(phy:GetVelocity().y)/250 ))
 			phy:AddVelocity(self.Entity:GetAngles():Forward() * -50)
 			local right_right_1 = self.Entity:GetAngles():Right() * 150
@@ -162,7 +162,7 @@ function ENT:FailMove()
 				start = self.Entity:GetPos() + right_right_1 - Vector(0, 0, 100),
 				endpos = self.Entity:GetPos() + right_right_2 - Vector(0, 0, 100),
 				filter = function( ent ) 
-					if ( ent != self ) then 
+					if ( ent ~= self ) then 
 						return true
 					end 
 				end
@@ -174,26 +174,26 @@ function ENT:FailMove()
 				start = self.Entity:GetPos() + right_left_1 - Vector(0, 0, 100),
 				endpos = self.Entity:GetPos() + right_left_2 - Vector(0, 0, 100),
 				filter = function( ent ) 
-					if ( ent != self ) then 
+					if ( ent ~= self ) then 
 						return true
 					end 
 				end
 			} )
 
-			if (right_check.Entity == NULL && self.FailCurTime < CurTime() && !table.HasValue(self.FailStepUsed, 1)) then
+			if (right_check.Entity == NULL and self.FailCurTime < CurTime() and not table.HasValue(self.FailStepUsed, 1)) then
 				self.FailStep = 1
 				self.FailCurTime = CurTime() + 4
 				table.insert(self.FailStepUsed, 1)
-			elseif (left_check.Entity == NULL && self.FailCurTime < CurTime() && !table.HasValue(self.FailStepUsed, 2)) then
+			elseif (left_check.Entity == NULL and self.FailCurTime < CurTime() and not table.HasValue(self.FailStepUsed, 2)) then
 				self.FailStep = 2
 				self.FailCurTime = CurTime() + 4
 				table.insert(self.FailStepUsed, 2)
-			elseif (self.FailCurTime < CurTime() && !table.HasValue(self.FailStepUsed, 3)) then
+			elseif (self.FailCurTime < CurTime() and not table.HasValue(self.FailStepUsed, 3)) then
 				self.FailStep = 3
 				self.FailCurTime = CurTime() + 4
 				table.insert(self.FailStepUsed, 3)
 			end
-		elseif (checkIsWorld.Entity == NULL && self.FailCurTime < CurTime() && self.FailStep != -1) then
+		elseif (checkIsWorld.Entity == NULL and self.FailCurTime < CurTime() and self.FailStep ~= -1) then
 			self.FailStep = -1
 			table.Empty(self.FailStepUsed)
 		else
@@ -203,7 +203,7 @@ function ENT:FailMove()
 				start = self.Entity:GetPos() + right_right_1 - Vector(0, 0, 100),
 				endpos = self.Entity:GetPos() + right_right_2 - Vector(0, 0, 100),
 				filter = function( ent ) 
-					if ( ent != self ) then 
+					if ( ent ~= self ) then 
 						return true
 					end 
 				end
@@ -215,15 +215,15 @@ function ENT:FailMove()
 				start = self.Entity:GetPos() + right_left_1 - Vector(0, 0, 100),
 				endpos = self.Entity:GetPos() + right_left_2 - Vector(0, 0, 100),
 				filter = function( ent ) 
-					if ( ent != self ) then 
+					if ( ent ~= self ) then 
 						return true
 					end 
 				end
 			} )
 
-			if (right_check.Entity != NULL) then
+			if (right_check.Entity ~= NULL) then
 				phy:AddVelocity(self.Entity:GetAngles():Right() * -50)
-			elseif (left_check.Entity != NULL) then
+			elseif (left_check.Entity ~= NULL) then
 				phy:AddVelocity(self.Entity:GetAngles():Right() * 50)
 			end
 		end
@@ -240,7 +240,7 @@ end
 
 function ENT:Think()
 	if self.dead then return end
-	if self:Health() > 0 && GetConVarNumber("ai_disabled") == 0 then
+	if self:Health() > 0 and GetConVarNumber("ai_disabled") == 0 then
 		if self.Enemy:IsValid() == false then
 			self.Enemy = NULL
 			self.Alerted = false
@@ -257,7 +257,7 @@ function ENT:Think()
 			if phy:IsValid() then
 				phy:AddVelocity(self.Entity:GetAngles():Up() * 200)
 			end
-			if (self.Patrol && self.PatrolPoint != nil) then
+			if (self.Patrol and self.PatrolPoint ~= nil) then
 				self.PatrolPoint = nil
 			end
 		elseif (self:WaterLevel() >= 2) then
@@ -286,12 +286,12 @@ function ENT:Think()
 			phy:SetVelocity(velocity)
 		end
 		
-		if (self.Alerted && self.AlertedCurTime < CurTime()) then
+		if (self.Alerted and self.AlertedCurTime < CurTime()) then
 			local tr = util.TraceLine( {
 				start = self:GetPos() + Vector(0, 0, -100),
 				endpos = self.Enemy:GetPos() + Vector(0, 0, self.Enemy:OBBCenter().z),
 				filter = function( ent ) 
-					if (IsValid(ent) && ent:GetClass() != "npc_apache_scp_sb_friend") then
+					if (IsValid(ent) and ent:GetClass() ~= "npc_apache_scp_sb_friend") then
 						if (ent:IsVehicle()) then
 							if (IsValid(ent:GetDriver())) then
 								self.Enemy = ent:GetDriver()
@@ -314,8 +314,8 @@ function ENT:Think()
 				self.AlertedCurTimeEnd = -1
 				self.Alerted = false
 			end
-		elseif(!self.Alerted) then
-			if (!self.PequodBack) then
+		elseif(not self.Alerted) then
+			if (not self.PequodBack) then
 				self:ResetEnemy()
 				self:FindEnemyDan()
 			end
@@ -323,30 +323,30 @@ function ENT:Think()
 
 		-- print(self.PlayerHelpSoundPlay)
 		-- print(self.PlayerHelpID)
-		-- if (self.PlayerHelpID != NULL) then
+		-- if (self.PlayerHelpID ~= NULL) then
 		-- 	print(self:GetPos():Distance(self.PlayerHelpID:GetPos()))
 		-- end
 		-- print("________________________")
 
-		if (self.PlayerHelpSoundPlay && self.PlayerHelpID != NULL && self:GetPos():Distance(self.PlayerHelpID:GetPos()) <= 2000) then
+		if (self.PlayerHelpSoundPlay and self.PlayerHelpID ~= NULL and self:GetPos():Distance(self.PlayerHelpID:GetPos()) <= 2000) then
 			self.pequod_marker:Play()
 			self.pequod_marker:PlayEx(1, 100)
-			timer.Simple(20, function() if (!IsValid(self)) then return end self.pequod_marker:Stop() end)
+			timer.Simple(20, function() if (not IsValid(self)) then return end self.pequod_marker:Stop() end)
 			self.PlayerHelpSoundPlay = false
 			self.HelpPosition = true
-		elseif (self.PlayerHelpSoundPlay && self.PlayerHelpID != NULL && self:GetPos():Distance(self.PlayerHelpID:GetPos()) <= 5000) then
+		elseif (self.PlayerHelpSoundPlay and self.PlayerHelpID ~= NULL and self:GetPos():Distance(self.PlayerHelpID:GetPos()) <= 5000) then
 			if (math.random(0, 1) == 1) then
 				self.pequod_this_is_pequod_1:Play()
 				self.pequod_this_is_pequod_1:PlayEx(1, 100)
-				timer.Simple(20, function() if (!IsValid(self)) then return end self.pequod_this_is_pequod_1:Stop() end)
+				timer.Simple(20, function() if (not IsValid(self)) then return end self.pequod_this_is_pequod_1:Stop() end)
 			else
 				self.pequod_this_is_pequod_2:Play()
 				self.pequod_this_is_pequod_2:PlayEx(1, 100)
-				timer.Simple(20, function() if (!IsValid(self)) then return end self.pequod_this_is_pequod_2:Stop() end)
+				timer.Simple(20, function() if (not IsValid(self)) then return end self.pequod_this_is_pequod_2:Stop() end)
 			end
 		end
 
-		if (self.Enemy != NULL) then	
+		if (self.Enemy ~= NULL) then	
 			local wantedvector = (self.Enemy:GetPos() - self:GetPos() + Vector(0,0,-80))
 			local wantedangle = (self.Enemy:GetPos() - self:GetPos() + Vector(0,0,80)):Angle()
 			local currentangle = Angle(20,self:GetAngles().y,0)
@@ -358,7 +358,7 @@ function ENT:Think()
 				endpos = self:GetPos() + Vector(0, 0, -700),
 			} )
 			
-			if ( self.State == 0 && self.cooldown == false ) then
+			if ( self.State == 0 and self.cooldown == false ) then
 				local phy = self:GetPhysicsObject()
 				if phy:IsValid() then
 					if ( badRocket.Entity == NULL ) then
@@ -378,11 +378,11 @@ function ENT:Think()
 				phy:ApplyForceCenter(wantedvector * -40)
 			end
 
-			if math.abs(anglediff) < 50 && self:GetPos():Distance(self.Enemy:GetPos()) < self.maxDistance && self.cooldown == false && rocketNormalAngleShoot <= 100 then
-				if (!self.pequod_target_shoot:IsPlaying()) then
+			if math.abs(anglediff) < 50 and self:GetPos():Distance(self.Enemy:GetPos()) < self.maxDistance and self.cooldown == false and rocketNormalAngleShoot <= 100 then
+				if (not self.pequod_target_shoot:IsPlaying()) then
 					self.pequod_target_shoot:Play()
 					self.pequod_target_shoot:PlayEx(1, 100)
-					timer.Simple(math.random(10, 20), function() if (!IsValid(self)) then return end self.pequod_target_shoot:Stop() end)
+					timer.Simple(math.random(10, 20), function() if (not IsValid(self)) then return end self.pequod_target_shoot:Stop() end)
 				end
 				
 				local shoot_vector = wantedvector
@@ -400,7 +400,7 @@ function ENT:Think()
 				self:EmitSound("apache/fire.wav",500,100)
 				
 				if (rocketNormalAngleShoot <= 100) then
-					if math.random(0,200) <= 2 && self.cooldown == false then
+					if math.random(0,200) <= 2 and self.cooldown == false then
 						local shoot_vector = wantedvector
 						shoot_vector:Normalize()
 						local rocket = ents.Create("proj_dan_heli_shot_scp_sb_fg")
@@ -429,7 +429,7 @@ function ENT:Think()
 						end
 					end
 				end
-			elseif math.abs(anglediff) < 30 && math.random(0,200) <= 25 && self.cooldown == false && badRocket.Entity == NULL && rocketNormalAngleShoot <= 100 then
+			elseif math.abs(anglediff) < 30 and math.random(0,200) <= 25 and self.cooldown == false and badRocket.Entity == NULL and rocketNormalAngleShoot <= 100 then
 				local shoot_vector = wantedvector
 				shoot_vector:Normalize()
 				local rocket = ents.Create("proj_dan_heli_shot_scp_sb_fg")
@@ -458,7 +458,7 @@ function ENT:Think()
 				end
 			end
 		
-			if anglediff >= -0.5 && anglediff <= 0.5 then
+			if anglediff >= -0.5 and anglediff <= 0.5 then
 				local phy = self:GetPhysicsObject()
 				if phy:IsValid() then
 					phy:AddAngleVelocity( Vector(0, 0, 0) )
@@ -474,15 +474,15 @@ function ENT:Think()
 					phy:AddAngleVelocity( Vector(0, 0, -5) )
 				end
 			end
-		elseif (self.Enemy == NULL && self.Patrol) then
+		elseif (self.Enemy == NULL and self.Patrol) then
 			if (self.PatrolPoint == nil) then
 				self.PatrolPoint = Vector(self:GetPos().x + math.random(-3000, 3000), self:GetPos().y + math.random(-3000, 3000), self:GetPos().z + math.random(-3000, 3000))
-				if (!util.IsInWorld(self.PatrolPoint)) then
+				if (not util.IsInWorld(self.PatrolPoint)) then
 					self.PatrolPoint = nil
 					return
 				end
 			end
-			if (self.PlayerHelp && self.HelpPosition) then
+			if (self.PlayerHelp and self.HelpPosition) then
 				self.PlayerHelpID = NULL
 				self.PlayerHelp = false
 			end
@@ -516,7 +516,7 @@ function ENT:Think()
 				self:FailMove()
 			end
 
-			if anglediff >= -0.5 && anglediff <= 0.5 then
+			if anglediff >= -0.5 and anglediff <= 0.5 then
 				local phy = self:GetPhysicsObject()
 				if phy:IsValid() then
 					phy:AddAngleVelocity( Vector(0, 0, 0) )
@@ -579,7 +579,7 @@ elseif self.Enemy:Health(health) <= 0 then
 	self.Enemy = NULL
 end
 
-if self:Health() > 0 && self.cooldown == false then
+if self:Health() > 0 and self.cooldown == false then
 	local haslos = self:HasLOS()
 	local distance = 0
 	local enemy_pos = 0
@@ -597,7 +597,7 @@ if self:Health() > 0 && self.cooldown == false then
 		distance = self:GetPos():Distance(enemy_pos)
 		if distance > self.maxDistance then
 			self.State = 0 
-		elseif distance < self.maxDistance && distance > self.minDistance then 
+		elseif distance < self.maxDistance and distance > self.minDistance then 
 			self.State = 1 
 		else
 			self.State = 1 
@@ -613,18 +613,18 @@ function ENT:FindEnemyDan()
 	local isTarget = false
 
 	for k, v in pairs(objects) do
-		if (v:GetClass() != self:GetClass()) && v != self then
-			if (IsValid(v) && ( v:GetClass() == "npc_apache_scp_sb" || v:GetClass() == "npc_apache_scp_sb_new_enemy" )) then
+		if (v:GetClass() ~= self:GetClass()) and v ~= self then
+			if (IsValid(v) and ( v:GetClass() == "npc_apache_scp_sb" or v:GetClass() == "npc_apache_scp_sb_new_enemy" )) then
 				self.Enemy = v
 				self.Alerted = true
 				return true
 			end
-			if (IsValid(v) && v:IsNPC() && v:Disposition(self) == D_HT) then
+			if (IsValid(v) and v:IsNPC() and v:Disposition(self) == D_HT) then
 				local tr = util.TraceLine( {
 					start = self:GetPos() + Vector(0, 0, -100),
 					endpos = v:GetPos() + Vector(0, 0, v:OBBCenter().z),
 					filter = function( ent ) 
-						if ( IsValid(ent) && ent:GetClass() != "npc_apache_scp_sb_friend" && ent:IsNPC()) then 
+						if ( IsValid(ent) and ent:GetClass() ~= "npc_apache_scp_sb_friend" and ent:IsNPC()) then 
 							self.Alerted = true
 							return true
 						end
@@ -645,9 +645,9 @@ function ENT:FindEnemyDan()
 		end
 	end
 
-	if (!isTarget) then
+	if (not isTarget) then
 		self.Enemy = NULL
-	elseif (Target != NULL) then
+	elseif (Target ~= NULL) then
 		self.Enemy = Target
 	else
 		self.Enemy = NULL
@@ -687,7 +687,7 @@ function ENT:KilledDan()
 	self.cooldownCheck = true
 	self.PequodDown = true
 
-	if !self.Smoke then
+	if not self.Smoke then
 		self.Smoke = self:CreateSmoke()
 	end
 
@@ -718,7 +718,7 @@ function ENT:KilledDan()
 				endpos = self:GetPos() + Vector(0, 0, -160),
 			} )
 
-			if (tr.Entity != NULL) then
+			if (tr.Entity ~= NULL) then
 				isBreak = true
 			end
 
@@ -918,11 +918,11 @@ function ENT:ResetEnemy()
 	local enttable = ents.FindByClass("npc_*")
 	local player = player.GetAll()
 
-	if (#player != 0) then
+	if (#player ~= 0) then
 		for _, x in pairs(enttable) do
-			if (x:GetClass() != self:GetClass() && x:IsNPC() && x:Disposition(player[1]) == D_HT) then
+			if (x:GetClass() ~= self:GetClass() and x:IsNPC() and x:Disposition(player[1]) == D_HT) then
 				x:AddEntityRelationship( self, D_HT, 100 )
-			elseif (x:GetClass() != self:GetClass() && x:IsNPC() && x:Disposition(player[1]) == D_LI) then
+			elseif (x:GetClass() ~= self:GetClass() and x:IsNPC() and x:Disposition(player[1]) == D_LI) then
 				x:AddEntityRelationship( self, D_LI, 100 )
 			end
 		end
@@ -951,7 +951,7 @@ function ENT:OnRemove()
 end
 
 function ENT:HasLOS()
-	if self.Enemy != NULL then
+	if self.Enemy ~= NULL then
 	local tracedata = {}
 
 	tracedata.start = self:GetPos()

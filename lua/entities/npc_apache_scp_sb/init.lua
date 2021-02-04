@@ -163,10 +163,10 @@ function ENT:Find()
 	local objects = ents.GetAll();
 	local j = #objects;
 
-	if ( j != 0 ) then
+	if ( j ~= 0 ) then
 		for i = 1, j do
 			local target = objects[i];
-			if ( target:GetClass() != self.NoTargetClass && target:GetClass() != "npc_apache_scp_sb_new_enemy" ) then
+			if ( target:GetClass() ~= self.NoTargetClass and target:GetClass() ~= "npc_apache_scp_sb_new_enemy" ) then
 				if ( target:IsPlayer() ) then
 					if ( self:IsNormalTarget(target) ) then
 						return target;

@@ -116,7 +116,7 @@ hook.Add( "PlayerSay", "HOOK.FG.Black.Helicopter.PequodFriendSupport", function(
 	local SupportAdd = function()
 		local ok = false
 		for k, v in pairs(ents.GetAll()) do
-			if (v:GetClass() == "npc_apache_scp_sb_friend" && v.Enemy == NULL && !v.PlayerHelp) then
+			if (v:GetClass() == "npc_apache_scp_sb_friend" and v.Enemy == NULL and not v.PlayerHelp) then
 				v.PlayerHelp = true
 				v.PlayerHelpID = ply
 				v.PatrolPoint = ply:GetPos()
@@ -129,7 +129,7 @@ hook.Add( "PlayerSay", "HOOK.FG.Black.Helicopter.PequodFriendSupport", function(
 			end
 		end
 
-		if (!ok) then
+		if (not ok) then
 			ply:SendLua([[chat.AddText(Color(255, 0, 0),"At the moment, there are no free helicopters in the air!")]])
 		end
 	end
@@ -187,7 +187,7 @@ hook.Add( "PlayerSay", "HOOK.FG.Black.Helicopter.PequodFriendSupport", function(
 					local strf2 = string.find(text:lower(), f2:lower())
 					local strf3 = string.find(text:lower(), f3:lower())
 
-					if (strf1 && strf2 && strf3) then
+					if (strf1 and strf2 and strf3) then
 						SupportAdd()
 						return text
 					end
@@ -214,10 +214,10 @@ hook.Add("EntityTakeDamage", "npc_apache_scp_sb_EntityTakeDamage", function( ply
 end );
 
 
--- concommand.Add("all_copter_dead", function()
--- 	for k, v in ipairs( ents.GetAll() ) do
--- 		if ( v:GetClass() == "npc_apache_scp_sb_new_enemy" ) then
--- 			v:BreakableCopter();
--- 		end;
--- 	end;
--- end);
+concommand.Add("all_copter_dead", function()
+	for k, v in ipairs( ents.GetAll() ) do
+		if ( v:GetClass() == "npc_apache_scp_sb_new_enemy" ) then
+			v:BreakableCopter();
+		end;
+	end;
+end);

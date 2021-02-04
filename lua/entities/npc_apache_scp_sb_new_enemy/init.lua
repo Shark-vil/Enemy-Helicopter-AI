@@ -54,12 +54,16 @@ ENT.isRetreat					= false;
 ENT.isRetreatDelay				= 0;
 ENT.SolitaryRetreat				= false;
 
+local Base;
+
 --[[
 	Object initialization
 --]]
 function ENT:Initialize()
-	self:SetModel( "models/usmcapachelicopter.mdl" );	
+	Base = HelicopterBase:New(self);
+	print(Base:GetEntity());
 
+	self:SetModel( "models/usmcapachelicopter.mdl" );	
 	self:PhysicsInit( SOLID_VPHYSICS );
 	self:SetMoveType( MOVETYPE_VPHYSICS );   	
 	self:SetSolid( SOLID_VPHYSICS );
@@ -189,8 +193,6 @@ function ENT:FindControlPos()
 	timer.Create( timerIndex, 0.1, 0, function()
 		local helicopter = self;
 
-		print( "Timer: " .. tostring( timer.Exists( timerIndex ) ) );
-
 		if ( not IsValid( helicopter ) ) then
 			timer.Remove( timerIndex );
 			return;
@@ -205,7 +207,6 @@ function ENT:FindControlPos()
 			if ( IsValid( ply ) ) then
 				helPos = ply:GetPos();
 				vec = Vector( helPos.x + math.random( -2000, 2000 ), helPos.y + math.random( -2000, 2000 ), helPos.z + math.random( -100, 100 ) );
-				print( "1" );
 			end;
 		else
 			if ( helicopter.isRetreat ) then
@@ -217,9 +218,7 @@ function ENT:FindControlPos()
 						break;
 					end;
 				end;
-				print( "2" );
 			else
-				print( "3" );
 				vec = Vector( helPos.x + math.random( -5000, 5000 ), helPos.y + math.random( -5000, 5000 ), helPos.z + math.random( -5000, 5000 ) );
 			end;
 		end;
@@ -240,19 +239,23 @@ function ENT:PrioritizationNPC(pCount)
 	if ( pCount == 0 ) then return; end;
 	local npcs = ents.FindByClass( "npc*" );
 	local npcsCount = table.Count( npcs );
+
 	if ( npcsCount == 0 ) then return; end;
 	local players = player.GetAll();
 	local ply = NULL;
+
 	for i = 1, pCount do
 		if ( IsValid( players[i] ) ) then
 			ply = players[i];
 			break;
 		end;
 	end;
+
 	if ( ply == NULL ) then
 		MsgN( "No players found for interaction! The helicopter is deleted." );
 		self:Remove();
 	end;
+
 	for i = 1, npcsCount do
 		npc = npcs[i];
 		if ( npc:Disposition( ply ) ~= D_HT ) then
@@ -623,8 +626,8 @@ function ENT:MoveToTarget(target, phy)
 		end;
 
 		if ( self.Patrol or copterPos:Distance( targetPos ) >= self.StartMoveToPlayerDistance ) then
-			-- local division = 6;
-			local division = 1;
+			local division = 6;
+			-- local division = 1;
 			local centerPos = Vector(0, 0, 0);
 
 			local MaxSpeed = self.MaxSpeed;
@@ -641,7 +644,7 @@ function ENT:MoveToTarget(target, phy)
 				self.Speed = MaxSpeed;
 			end;
 			
-			if ( self.Patrol && not self.isHit ) then
+			if ( self.Patrol and not self.isHit ) then
 				centerPos = Vector( ( targetPos.x - copterPos.x ), ( targetPos.y - copterPos.y ), ( targetPos.z - copterPos.z ) );
 				phy:ApplyForceCenter( centerPos * self.Speed );
 			elseif ( not self.isHit ) then
@@ -703,14 +706,6 @@ function ENT:CustomNavigationMove(target, phy)
 			end;
 		end;
 	} );
-
-	-- Fly down if the helicopter is too hight position
-	-- if ( self.UltimateHeightIsWorldDelay < CurTime() ) then
-	-- 	print(self.UltimateHeightIsWorldCount);
-	-- 	print("UltimateHeightIsWorldDelay: Tick");
-	-- 	print("UltimateHeightIsWorld: " .. tostring(self.UltimateHeightIsWorld));
-	-- 	print(tr.Hit);
-	-- end;
 
 	if ( tr.Hit ) then
 		if ( not IsValid( target ) ) then
@@ -903,7 +898,7 @@ function ENT:CopterFire(target)
 	local distanceToTarget = self:GetPos():Distance( target:GetPos() );
 
 	-- Rocket or bullet attack
-	if ( ( distanceToTarget > self.AttackTurretDistance or self.TurretNotHit > 6 ) and self.RocketFire and ( not self:EnemyIsHigher( target ) or self.UltimateHeightIsWorld ) and self.RocketCoolDown < CurTime() ) then
+	if ( ( distanceToTarget > self.AttackTurretDistance or self.TurretNotHit > 6 or math.random( 0, 100 ) <= 10 ) and self.RocketFire and ( not self:EnemyIsHigher( target ) or self.UltimateHeightIsWorld ) and self.RocketCoolDown < CurTime() ) then
 		local rocket = ents.Create( "proj_dan_heli_shot_scp_sb_fg" );
 		if ( self.RocketToggle == true ) then
 			rocket:SetPos( self:LocalToWorld( Vector( 150, 55, -65 ) ) );
@@ -929,19 +924,23 @@ function ENT:CopterFire(target)
 		rocket:Spawn();
 		local rocket_phy = rocket:GetPhysicsObject();
 		if ( rocket_phy:IsValid() ) then
-			-- local attack_type = math.random( 0, 2 );
-			-- if ( attack_type == 0 ) then
+			local attack_type = math.random( 0, 2 );
+			if ( attack_type == 0 ) then
 				rocket_phy:ApplyForceCenter( ( target:GetPos() - self:GetPos() ):GetNormalized() * 7500 );
-			-- elseif ( attack_type == 1 ) then
-				-- rocket_phy:ApplyForceCenter( ( ( self:GetAngles() + Angle( math.random( 5, 10 ), 0, 0 ) ):Forward() ) * 7500 );
-			-- else
-			-- 	rocket_phy:ApplyForceCenter( LerpVector( 0.5, wantedvector:GetNormalized(), ( ( self:GetAngles() + Angle( 15, 0, 0 ) ):Forward() ) ) * 7500 );
-			-- end;
+			elseif ( attack_type == 1 ) then
+				rocket_phy:ApplyForceCenter( ( ( self:GetAngles() + Angle( math.random( 5, 10 ), 0, 0 ) ):Forward() ) * 7500 );
+			else
+				rocket_phy:ApplyForceCenter( LerpVector( 0.5, (
+						target:GetPos() - self:GetPos() + Vector(
+							0, 0, math.random(-5, 5)
+						)
+					):GetNormalized(), ( ( self:GetAngles() + Angle( 15, 0, 0 ) ):Forward() ) ) * 7500 );
+			end;
 		end;
 		self.TurretNotHit = 0;
 		self.RocketCoolDown = CurTime() + 1;
 		self.FailHit = self.FailHit + 1;
-	elseif ( distanceToTarget <= self.AttackTurretDistance and self.TurretFire and ( not self:EnemyIsHigher( target ) or self.UltimateHeightIsWorld ) and not self.TurretCoolDown ) then
+	elseif ( ( distanceToTarget <= self.AttackTurretDistance ) and self.TurretFire and ( not self:EnemyIsHigher( target ) or self.UltimateHeightIsWorld ) and not self.TurretCoolDown ) then
 		local bullet 		= {};
 		bullet.Num 			= 4;
 		bullet.Src 			= self:GetPos() + self:GetForward() * 150;
@@ -988,7 +987,7 @@ function ENT:CopterDown()
 	self.pequod_down_sound:Play();
 	self.pequod_down_sound:PlayEx( 0.5, 100 );
 
-	local timerName = tostring( self:EntIndex() ).."_copter_break_"..tostring( CurTime() );
+	local timerName = tostring( self:EntIndex() ) .. "_copter_break_" .. tostring( CurTime() );
 	timer.Create( timerName, 0.1, 0, function()
 		if ( IsValid( self ) ) then
 			local phy = self:GetPhysicsObject();
@@ -1049,8 +1048,7 @@ function ENT:BreakableCopter()
 	fire:SetParent( ragdoll );
 	fire:Spawn();
 
-	ParticleEffect( "btv3_explo", self:GetPos(), Angle( 0, math.random( 0,360 ) , 0 ), self );
-	sound.Play( "hd/new_grenadeexplo.mp3", self:GetPos(), math.random( 80, 120 ), math.random( 80, 120 ), 1 );
+	sound.Play( "hd/bfg_explosion.mp3", self:GetPos(), math.random( 80, 120 ), math.random( 80, 120 ), 1 );
 	util.BlastDamage( self, self, self:GetPos(), 300, 500 );
 
 	local effectdata = EffectData();

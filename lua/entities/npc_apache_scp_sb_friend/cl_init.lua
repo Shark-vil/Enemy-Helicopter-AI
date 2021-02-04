@@ -79,7 +79,7 @@ function ENT:Draw()
 	-- 		start = self.Entity:GetPos() + Vector(0, 0, 100),
 	-- 		endpos = LocalPlayer():GetPos() + Vector(0, 0, 10),
 	-- 		filter = function( ent ) 
-	-- 			if ( IsValid(ent) && ent:IsPlayer() && ent:Alive() ) then 
+	-- 			if ( IsValid(ent) and ent:IsPlayer() and ent:Alive() ) then 
 	-- 				return true
 	-- 			end
 	-- 		end
@@ -87,7 +87,7 @@ function ENT:Draw()
 
 	-- 	render.DrawLine( self.Entity:GetPos() + Vector(0, 0, 200), self.Entity:GetPos() + Vector(0, 0, 500), Color(255, 50, 255), true )
 
-	-- 	if tr.Entity == NULL || tr.Entity:IsWorld() then
+	-- 	if tr.Entity == NULL or tr.Entity:IsWorld() then
 	-- 		render.DrawLine( self.Entity:GetPos() + Vector(0, 0, -100), LocalPlayer():GetPos() + Vector(0, 0, -5), Color(255, 0, 0), true )
 	-- 	else
 	-- 		render.DrawLine( self.Entity:GetPos() + Vector(0, 0, -100), LocalPlayer():GetPos() + Vector(0, 0, -5), Color(100, 0, 30), true )
